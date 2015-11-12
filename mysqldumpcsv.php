@@ -9,14 +9,5 @@ $opts = getopt ('u:p:h:' , [
     'help::',
 ] );
 
-
-
-
-if(isset($opts['help'])){
-    die($docs);
-}
-
-
-
-
-var_dump($opts);
+$command = new MainCommand($opts);
+$command->execute();

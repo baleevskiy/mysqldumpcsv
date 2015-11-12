@@ -62,8 +62,18 @@ EOT;
 }
 
 
-class mainCommand extends Command {
+class MainCommand extends Command {
     public function execute(){
 
+        if($this->getParam('help')){
+            $command = new PrintHelpCommand($this->_params);
+        } elseif ($this->getParam('create_table')){
+            $command = new CreateTableCommand($this->_params);
+        } else {
+            $command = new DumpCommand($this->_params);
+        }
+
+        $command->execute();
+        return True;
     }
 }
