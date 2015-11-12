@@ -3,10 +3,10 @@
 
 
 $opts = getopt ('u:p:h:' , [
-    'file:',
+    'file',
     'create_table',
-    'dry_run',
-    'help',
+    'dry_run::',
+    'help::',
 ] );
 
 
@@ -30,7 +30,14 @@ but the database won't be altered.
 -h – MySQL host
 
 --help – which will output the above list of directives with details.
+
 EOT;
+
+if(isset($opts['help'])){
+    die($docs);
+}
+
+
 
 
 var_dump($opts);
