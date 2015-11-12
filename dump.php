@@ -15,6 +15,10 @@ abstract class Command implements Executable{
     public function getParam($key, $default=null){
         return isset($this->_params[$key])?$this->_params[$key]:$default;
     }
+
+    public function hasParam($key){
+        return isset($this->_params[$key]);
+    }
 }
 
 class DumpCommand extends Command{
@@ -65,9 +69,9 @@ EOT;
 class MainCommand extends Command {
     public function execute(){
 
-        if($this->getParam('help')){
+        if($this->hasParam('help')){
             $command = new PrintHelpCommand($this->_params);
-        } elseif ($this->getParam('create_table')){
+        } elseif ($this->hasParam('create_table')){
             $command = new CreateTableCommand($this->_params);
         } else {
             $command = new DumpCommand($this->_params);
