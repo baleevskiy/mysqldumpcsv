@@ -3,7 +3,7 @@
 include('dump.php');
 
 $opts = getopt ('d:u:p:h:' , [
-    'file',
+    'file:',
     'create_table',
     'dry_run::',
     'help::',

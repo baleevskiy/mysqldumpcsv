@@ -29,18 +29,18 @@ class DB {
     }
 
     public function saveUser($name, $surname, $email){
-
-        mysql_query('insert into users (`name`, `surname`, `email`) VALUES ('
-            .'"'.mysql_real_escape_string(ucfirst($name)).'"'
-            .'"'.mysql_real_escape_string(ucfirst($surname)).'"'
+        $query = 'insert into users (`name`, `surname`, `email`) VALUES ('
+            .'"'.mysql_real_escape_string(ucfirst($name)).'",'
+            .'"'.mysql_real_escape_string(ucfirst($surname)).'",'
             .'"'.mysql_real_escape_string(strtolower($email)).'"'
-            .')'
-            , $this->_link);
+            .')';
+        print $query;
+        mysql_query($query, $this->_link);
     }
 
     public function validateEmail($value){
         $pattern='/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
-        return is_string($value) && strlen($value)<=254 && preg_match($this->pattern,$value);
+        return is_string($value) && strlen($value)<=254 && preg_match($pattern,$value);
     }
 
     public function validateName($value){

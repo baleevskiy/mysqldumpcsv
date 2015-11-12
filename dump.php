@@ -33,11 +33,20 @@ class DumpCommand extends Command{
 
     public function execute(){
         $db = new DB($this->_params);
-
         if (($handle = fopen($this->getParam('file'), "r")) !== false) {
 
             while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                var_dump($data);
+                list($name, $surname, $email) = $data;
+                if($db->validate($name, $surname, $email)){
+                    print('saving set :'. implode(' ', [$name, $surname, $email]));
+
+                    if(!$this->hasParam('dry_run')){
+                        $db->saveUser($name, $surname, $email);
+                    }
+
+                } else {
+                    print('invalid set :'. implode(' ', [$name, $surname, $email]));
+                }
             }
             fclose($handle);
         } else {
