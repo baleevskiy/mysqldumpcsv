@@ -29,9 +29,20 @@ abstract class Command implements Executable{
 }
 
 class DumpCommand extends Command{
-    protected $_required_params = ['u', 'h', 'd', 'p'];
+    protected $_required_params = ['u', 'h', 'd', 'p', 'file'];
 
     public function execute(){
+        $db = new DB($this->_params);
+
+        if (($handle = fopen($this->getParam('file'), "r")) !== false) {
+
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                var_dump($data);
+            }
+            fclose($handle);
+        } else {
+            throw new ParamException('Can not read the file');
+        }
 
     }
 }
@@ -42,7 +53,9 @@ class CreateTableCommand extends Command{
 
     public function execute(){
         $db = new DB($this->_params);
-        $db->createTable();
+        $db->createUsersTable();
+        print 'TABLE CREATED';
+        return true;
     }
 }
 
