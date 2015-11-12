@@ -2,7 +2,7 @@
 <?php
 include('dump.php');
 
-$opts = getopt ('u:p:h:' , [
+$opts = getopt ('d:u:p:h:' , [
     'file',
     'create_table',
     'dry_run::',
