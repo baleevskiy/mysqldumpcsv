@@ -4,7 +4,7 @@
  * Just a simple wrapper for mysql
  * */
 
-//TODO: make a base class
+//TODO: make a base class, or replace it with Model from MVC framework
 class UserModel {
     protected $_link;
 
