@@ -3,6 +3,8 @@
 /*
  * Just a simple wrapper for mysql
  * */
+
+//TODO: make a base class
 class UserModel {
     protected $_link;
 

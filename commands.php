@@ -9,6 +9,7 @@ interface Executable{
 abstract class Command implements Executable{
     protected  $_params;
     protected $_required_params = [];
+    //TODO: add defaults
 
     public function __construct($params){
         $this->_params = $params;
@@ -26,9 +27,15 @@ abstract class Command implements Executable{
     public function hasParam($key){
         return isset($this->_params[$key]);
     }
+
+    public function verbose($message){
+        if($this->hasParam('verbose')){
+            print $message;
+        }
+    }
 }
 
-class DumpCommand extends Command{
+class ExportCommand extends Command{
     protected $_required_params = ['u', 'h', 'd', 'p', 'file'];
 
     public function execute(){
@@ -53,12 +60,6 @@ class DumpCommand extends Command{
             fclose($handle);
         } else {
             throw new ParamException('Can not read the file');
-        }
-    }
-
-    public function verbose($message){
-        if($this->hasParam('verbose')){
-            print $message;
         }
     }
 }
@@ -123,7 +124,7 @@ class MainCommand extends Command {
             } elseif ($this->hasParam('create_table')){
                 $command = new CreateTableCommand($this->_params);
             } else {
-                $command = new DumpCommand($this->_params);
+                $command = new ExportCommand($this->_params);
             }
             $command->execute();
         }
