@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
-include('dump.php');
+include('commands.php');
 
 $opts = getopt ('d:u:p:h:' , [
     'file:',
     'create_table',
     'dry_run::',
     'help::',
+    'verbose::'
 ] );
 
 $command = new MainCommand($opts);

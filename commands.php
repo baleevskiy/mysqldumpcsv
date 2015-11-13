@@ -1,5 +1,5 @@
 <?php
-include('db.php');
+include('models.php');
 
 interface Executable{
     public function execute();
@@ -14,7 +14,7 @@ abstract class Command implements Executable{
         $this->_params = $params;
         foreach($this->_required_params as $param){
             if(!$this->hasParam($param)){
-                throw new ParamException('params '.$param.' required');
+                throw new ParamException('param '.$param.' required');
             }
         }
     }
@@ -32,27 +32,34 @@ class DumpCommand extends Command{
     protected $_required_params = ['u', 'h', 'd', 'p', 'file'];
 
     public function execute(){
-        $db = new DB($this->_params);
+        $model_class = $this->getParam('data_model', 'UserModel');
+
+        $db = new $model_class($this->_params);
         if (($handle = fopen($this->getParam('file'), "r")) !== false) {
 
             while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                list($name, $surname, $email) = $data;
-                if($db->validate($name, $surname, $email)){
-                    print('saving set :'. implode(' ', [$name, $surname, $email]));
-
+                if($db->validate($data)){
+                    $this->verbose('saving set :'. implode(' ', $data));
+                    $this->verbose( "\r\n");
                     if(!$this->hasParam('dry_run')){
-                        $db->saveUser($name, $surname, $email);
+                        $db->save($data);
                     }
 
                 } else {
-                    print('invalid set :'. implode(' ', [$name, $surname, $email]));
+                    $this->verbose('invalid set :'. implode(' ', $data));
+                    $this->verbose("\r\n");
                 }
             }
             fclose($handle);
         } else {
             throw new ParamException('Can not read the file');
         }
+    }
 
+    public function verbose($message){
+        if($this->hasParam('verbose')){
+            print $message;
+        }
     }
 }
 
@@ -61,9 +68,10 @@ class CreateTableCommand extends Command{
     protected $_required_params = ['u', 'h', 'd', 'p'];
 
     public function execute(){
-        $db = new DB($this->_params);
-        $db->createUsersTable();
-        print 'TABLE CREATED';
+        $model_class = $this->getParam('data_model', 'UserModel');
+        $db = new $model_class($this->_params);
+        $db->createTable();
+        $this->verbose('TABLE CREATED');
         return true;
     }
 }
@@ -83,6 +91,8 @@ to run the script but not insert into the DB. All other functions will be execut
 
 but the database won't be altered.
 
+--data_model - this will define a model of your csv, "UserModel" by default
+
 -u – MySQL username
 
 -p – MySQL password
@@ -92,6 +102,8 @@ but the database won't be altered.
 -d - MySQL database
 
 --help – which will output the above list of directives with details.
+
+--verbose - will output more info
 
 EOT;
 
@@ -121,7 +133,7 @@ class MainCommand extends Command {
         }
         catch(ParamException $e){
             print $e->getMessage();
-            print "\r\n\r\n";
+            print "\n\r\n";
             $command = new PrintHelpCommand($this->_params);
             $command->execute();
         }
