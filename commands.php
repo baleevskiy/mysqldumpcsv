@@ -115,32 +115,4 @@ EOT;
 }
 
 
-class MainCommand extends Command {
-    public function execute(){
-        try{
-
-            if($this->hasParam('help')){
-                $command = new PrintHelpCommand($this->_params);
-            } elseif ($this->hasParam('create_table')){
-                $command = new CreateTableCommand($this->_params);
-            } else {
-                $command = new ExportCommand($this->_params);
-            }
-            $command->execute();
-        }
-        catch(DBException $e){
-            print 'DB Exception';
-            die($e->getMessage());
-        }
-        catch(ParamException $e){
-            print $e->getMessage();
-            print "\n\r\n";
-            $command = new PrintHelpCommand($this->_params);
-            $command->execute();
-        }
-
-        return True;
-    }
-}
-
 class ParamException extends Exception {}

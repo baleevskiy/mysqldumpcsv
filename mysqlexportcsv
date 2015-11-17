@@ -10,5 +10,24 @@ $opts = getopt ('d:u:p:h:' , [
     'verbose::'
 ] );
 
-$command = new MainCommand($opts);
-$command->execute();
+
+try{
+    if(isset($opts['help'])){
+        $command = new PrintHelpCommand($opts);
+    } elseif (isset($opts['create_table'])){
+        $command = new CreateTableCommand($opts);
+    } else {
+        $command = new ExportCommand($opts);
+    }
+    $command->execute();
+}
+catch(DBException $e){
+    print 'DB Exception';
+    die($e->getMessage());
+}
+catch(ParamException $e){
+    print $e->getMessage();
+    print "\n\r\n";
+    $command = new PrintHelpCommand($opts);
+    $command->execute();
+}
