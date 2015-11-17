@@ -42,8 +42,7 @@ class UserModel {
     }
 
     public function validateEmail($value){
-        $pattern='/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
-        return is_string($value) && strlen($value)<=254 && preg_match($pattern,$value);
+        return false !== filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
     public function validateName($value){
